@@ -3,14 +3,17 @@ import 'dart:async';
 import 'package:flutter/services.dart';
 
 class Permission {
-  static const MethodChannel _channel = const MethodChannel('plugins.ly.com/permission');
+  static const MethodChannel _channel =
+      const MethodChannel('plugins.ly.com/permission');
 
-  static Future<List<Permissions>> getPermissionStatus(List<PermissionName> permissionNameList) async {
+  static Future<List<Permissions>> getPermissionStatus(
+      List<PermissionName> permissionNameList) async {
     List<String> list = [];
     permissionNameList.forEach((p) {
       list.add(getPermissionString(p));
     });
-    var status = await _channel.invokeMethod("getPermissionStatus", {"permissions": list});
+    var status = await _channel
+        .invokeMethod("getPermissionStatus", {"permissions": list});
     List<Permissions> permissionStatusList = [];
     for (int i = 0; i < status.length; i++) {
       PermissionStatus permissionStatus;
@@ -28,17 +31,20 @@ class Permission {
           permissionStatus = PermissionStatus.deny;
           break;
       }
-      permissionStatusList.add(Permissions(permissionNameList[i], permissionStatus));
+      permissionStatusList
+          .add(Permissions(permissionNameList[i], permissionStatus));
     }
     return permissionStatusList;
   }
 
-  static Future<List<Permissions>> requestPermissions(List<PermissionName> permissionNameList) async {
+  static Future<List<Permissions>> requestPermissions(
+      List<PermissionName> permissionNameList) async {
     List<String> list = [];
     permissionNameList.forEach((p) {
       list.add(getPermissionString(p));
     });
-    var status = await _channel.invokeMethod("requestPermissions", {"permissions": list});
+    var status = await _channel
+        .invokeMethod("requestPermissions", {"permissions": list});
     List<Permissions> permissionStatusList = [];
     for (int i = 0; i < status.length; i++) {
       PermissionStatus permissionStatus;
@@ -56,12 +62,14 @@ class Permission {
           permissionStatus = PermissionStatus.deny;
           break;
       }
-      permissionStatusList.add(Permissions(permissionNameList[i], permissionStatus));
+      permissionStatusList
+          .add(Permissions(permissionNameList[i], permissionStatus));
     }
     return permissionStatusList;
   }
 
-  static Future<PermissionStatus> requestSinglePermission(PermissionName permissionName) async {
+  static Future<PermissionStatus> requestSinglePermission(
+      PermissionName permissionName) async {
     var status = await _channel.invokeMethod("requestPermissions", {
       "permissions": [getPermissionString(permissionName)]
     });
@@ -83,7 +91,18 @@ class Permission {
 }
 
 /// Enum of all available [Permission]
-enum PermissionName { Calendar, Camera, Contacts, Microphone, Location, Phone, Sensors, SMS, Storage }
+enum PermissionName {
+  Calendar,
+  Camera,
+  Contacts,
+  Microphone,
+  Location,
+  Phone,
+  Sensors,
+  SMS,
+  Storage,
+  WriteStorage
+}
 
 /// Permissions status enum (iOs)
 enum PermissionStatus { noAgain, deny, allow }
@@ -124,6 +143,9 @@ String getPermissionString(PermissionName permissions) {
       break;
     case PermissionName.Storage:
       res = 'Storage';
+      break;
+    case PermissionName.WriteStorage:
+      res = "WriteStorage";
       break;
     default:
       res = '';
